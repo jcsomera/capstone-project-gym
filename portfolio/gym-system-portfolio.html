@@ -414,7 +414,7 @@
     overflow:hidden;
     cursor:pointer;
   }
-  .team-photo img{ width:100%; height:100%; object-fit:cover; display:none; }
+  
   .team-photo.has-image img{ display:block; }
   .team-photo .uploader{ border-radius:50%; font-size:10px; }
   .team-photo .uploader-plus{ width:26px; height:26px; font-size:14px; }
@@ -689,7 +689,7 @@
                 <div class="badge locked">🔒</div>
               </div>
             </div>
-            <img src="img/mobile-achievement.png" alt="Member app achievements screenshot">
+            <img class="uploaded-img" alt="Member app achievements screenshot">
             
           </div>
           <div class="phone-home"></div>
@@ -711,32 +711,32 @@
 
     <div class="team-grid">
       <div class="team-card">
-        <div class="team-photo">
+        <div class="team-photo" data-upload>
           <img src="img/vincent.jpg" alt="Photo of team member one">
         </div>
         <div class="team-role">Student Developer</div>
         <h3 class="team-name" spellcheck="false">Vincent Suba</h3>
-        <p class="team-desc" spellcheck="false">Built the admin console end-to-end, from the login flow to the payments engine, and designed the database that keeps memberships and billing in sync.</p>
+        <p class="team-desc" spellcheck="false">Vincent will build the admin console for this capstone project — the login system, dashboard, and payments and membership modules — and design the database behind it.</p>
       </div>
 
       <div class="team-card">
         <div class="team-photo" data-upload>
-          <img alt="Photo of team member two">
+          <img src="img/marvin.jpg" alt="Photo of team member one">
           
         </div>
-        <div class="team-role">Mobile App Developer</div>
-        <h3 class="team-name" spellcheck="false">Sam Okafor</h3>
-        <p class="team-desc" spellcheck="false">Designed and built the member app, including the QR check-in system and the achievement tracker that keeps members coming back.</p>
+        <div class="team-role">Student Developer</div>
+        <h3 class="team-name" spellcheck="false">Marvin Toldanes</h3>
+        <p class="team-desc" spellcheck="false">Marvin will develop the member app end to end, from sign-up and plan selection to the QR attendance scanner and achievement tracker.</p>
       </div>
 
       <div class="team-card">
         <div class="team-photo" data-upload>
-          <img alt="Photo of team member three">
+          <img src="img/joseph.jpg" alt="Photo of team member three">
           
         </div>
-        <div class="team-role">UI/UX &amp; Project Lead</div>
-        <h3 class="team-name"  ="true" spellcheck="false">Priya Nandan</h3>
-        <p class="team-desc"  ="true" spellcheck="false">Shaped the look and feel of both apps, ran user testing with real gym staff and members, and coordinated the project from first sketch to launch.</p>
+        <div class="team-role">Student Developer</div>
+        <h3 class="team-name"  ="true" spellcheck="false">Joseph Somera</h3>
+        <p class="team-desc"  ="true" spellcheck="false">Joseph will design both interfaces before development began, then manage the group's documentation, timeline, and adviser meetings to build and defend the system.</p>
       </div>
     </div>
 
