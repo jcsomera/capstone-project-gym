@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Admin Management System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+
+<div class="login-page" id="loginPage">
+
+    <div class="login-box">
+
+        <div class="login-logo">
+            <i class="fa-solid fa-dumbbell"></i>
+        </div>
+
+        <h1>GYM ADMIN</h1>
+        <p>Management System</p>
+
+        <form id="loginForm">
+
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="username"
+                       placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password"
+                       placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Login
+            </button>
+
+        </form>
+
+        <small>Demo: admin / admin123</small>
+
+    </div>
+
+</div>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<div class="app" id="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-dumbbell"></i>
+            </div>
+
+            <div>
+                <h2>GYM ADMIN</h2>
+                <span>Management System</span>
+            </div>
+        </div>
+
+
+        <nav>
+
+            <a href="#" class="nav-link active" data-page="dashboardPage">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#" class="nav-link" data-page="membersPage">
+                <i class="fa-solid fa-users"></i>
+                <span>Members</span>
+            </a>
+
+            <a href="#" class="nav-link" data-page="membershipPage">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Membership</span>
+            </a>
+
+            <a href="#" class="nav-link" data-page="salesPage">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                <span>Sales</span>
+            </a>
+
+            <a href="#" class="nav-link" data-page="reportsPage">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="#" class="nav-link" data-page="settingsPage">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button id="logoutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button class="menu-btn" id="menuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="page-title">
+                <h1 id="pageTitle">Dashboard</h1>
+                <p>Welcome back, Admin!</p>
+            </div>
+
+            <div class="admin-area">
+
+                <button class="notification">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>3</span>
+                </button>
+
+                <div class="admin-profile">
+                    <div class="profile-picture">
+                        A
+                    </div>
+
+                    <div>
+                        <strong>Admin</strong>
+                        <small>Administrator</small>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD PAGE ================= -->
+
+        <section class="page active-page" id="dashboardPage">
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Members</span>
+                        <h2 id="totalMembers">248</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            12% this month
+                        </small>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Active Members</span>
+                        <h2 id="activeMembers">186</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            8% this month
+                        </small>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+
+                    <div>
+                        <span>Expiring Soon</span>
+                        <h2>12</h2>
+                        <small class="warning-text">
+                            Within 7 days
+                        </small>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fa-solid fa-peso-sign"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Sales</span>
+                        <h2>₱85,000</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            15% this month
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- CHART + MEMBERS -->
+
+            <div class="content-grid">
+
+                <div class="card sales-chart">
+
+                    <div class="card-header">
+                        <div>
+                            <h3>Sales Overview</h3>
+                            <p>Monthly sales performance</p>
+                        </div>
+
+                        <select id="chartFilter">
+                            <option>Last 7 Months</option>
+                            <option>Last 30 Days</option>
+                        </select>
+                    </div>
+
+                    <div class="chart">
+
+                        <div class="chart-y">
+                            <span>100k</span>
+                            <span>80k</span>
+                            <span>60k</span>
+                            <span>40k</span>
+                            <span>20k</span>
+                            <span>0</span>
+                        </div>
+
+                        <div class="bars">
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:45%"></div>
+                                <span>Jan</span>
+                            </div>
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:60%"></div>
+                                <span>Feb</span>
+                            </div>
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:52%"></div>
+                                <span>Mar</span>
+                            </div>
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:72%"></div>
+                                <span>Apr</span>
+                            </div>
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:65%"></div>
+                                <span>May</span>
+                            </div>
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:80%"></div>
+                                <span>Jun</span>
+                            </div>
+
+                            <div class="bar-container">
+                                <div class="bar" style="height:90%"></div>
+                                <span>Jul</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MEMBERSHIP STATUS -->
+
+                <div class="card membership-status">
+
+                    <div class="card-header">
+                        <div>
+                            <h3>Membership Status</h3>
+                            <p>Current members</p>
+                        </div>
+                    </div>
+
+                    <div class="donut">
+                        <div class="donut-center">
+                            <strong>248</strong>
+                            <span>Members</span>
+                        </div>
+                    </div>
+
+                    <div class="legend">
+
+                        <div>
+                            <span class="dot active"></span>
+                            Active
+                            <strong>186</strong>
+                        </div>
+
+                        <div>
+                            <span class="dot expired"></span>
+                            Expired
+                            <strong>12</strong>
+                        </div>
+
+                        <div>
+                            <span class="dot pending"></span>
+                            Pending
+                            <strong>50</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECENT MEMBERS -->
+
+            <div class="card table-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>Recent Members</h3>
+                        <p>Recently registered members</p>
+                    </div>
+
+                    <button class="view-btn"
+                            onclick="showPage('membersPage')">
+                        View All
+                    </button>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Membership</th>
+                                <th>Start Date</th>
+                                <th>Expiration</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recentMembers">
+
+                            <tr>
+                                <td>
+                                    <div class="member-info">
+                                        <div class="avatar">JD</div>
+                                        <div>
+                                            <strong>Juan Dela Cruz</strong>
+                                            <small>juan@email.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>Monthly</td>
+                                <td>Sep 01, 2026</td>
+                                <td>Oct 01, 2026</td>
+
+                                <td>
+                                    <span class="badge active-badge">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button class="action-btn">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>
+                                    <div class="member-info">
+                                        <div class="avatar">MS</div>
+                                        <div>
+                                            <strong>Mark Santos</strong>
+                                            <small>mark@email.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>3 Months</td>
+                                <td>Aug 15, 2026</td>
+                                <td>Nov 15, 2026</td>
+
+                                <td>
+                                    <span class="badge active-badge">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button class="action-btn">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>
+                                    <div class="member-info">
+                                        <div class="avatar">PG</div>
+                                        <div>
+                                            <strong>Pedro Garcia</strong>
+                                            <small>pedro@email.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>Monthly</td>
+                                <td>Aug 10, 2026</td>
+                                <td>Sep 10, 2026</td>
+
+                                <td>
+                                    <span class="badge warning-badge">
+                                        Expiring
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button class="action-btn">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= MEMBERS PAGE ================= -->
+
+        <section class="page" id="membersPage">
+
+            <div class="page-actions">
+
+                <div>
+                    <h2>Members</h2>
+                    <p>Manage your gym members</p>
+                </div>
+
+                <button class="primary-btn" id="addMemberBtn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Member
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="search-area">
+
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text"
+                               id="memberSearch"
+                               placeholder="Search members...">
+                    </div>
+
+                    <select>
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Expired</option>
+                        <option>Expiring</option>
+                    </select>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Phone</th>
+                                <th>Plan</th>
+                                <th>Expiration</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="membersTable">
+
+                            <tr>
+                                <td>Juan Dela Cruz</td>
+                                <td>09123456789</td>
+                                <td>Monthly</td>
+                                <td>Oct 01, 2026</td>
+                                <td>
+                                    <span class="badge active-badge">
+                                        Active
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="small-btn">View</button>
+                                    <button class="delete-btn">Delete</button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Mark Santos</td>
+                                <td>09987654321</td>
+                                <td>3 Months</td>
+                                <td>Nov 15, 2026</td>
+                                <td>
+                                    <span class="badge active-badge">
+                                        Active
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="small-btn">View</button>
+                                    <button class="delete-btn">Delete</button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Pedro Garcia</td>
+                                <td>09112233445</td>
+                                <td>Monthly</td>
+                                <td>Sep 10, 2026</td>
+                                <td>
+                                    <span class="badge warning-badge">
+                                        Expiring
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="small-btn">View</button>
+                                    <button class="delete-btn">Delete</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= MEMBERSHIP PAGE ================= -->
+
+        <section class="page" id="membershipPage">
+
+            <div class="page-actions">
+
+                <div>
+                    <h2>Membership Plans</h2>
+                    <p>Manage your gym membership packages</p>
+                </div>
+
+                <button class="primary-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Plan
+                </button>
+
+            </div>
+
+
+            <div class="plans-grid">
+
+                <div class="plan-card">
+
+                    <i class="fa-solid fa-calendar"></i>
+
+                    <h3>Monthly</h3>
+
+                    <div class="price">
+                        ₱1,000
+                        <small>/ month</small>
+                    </div>
+
+                    <p>Basic gym membership</p>
+
+                    <button>Manage Plan</button>
+
+                </div>
+
+
+                <div class="plan-card popular">
+
+                    <span class="popular-tag">POPULAR</span>
+
+                    <i class="fa-solid fa-calendar-days"></i>
+
+                    <h3>3 Months</h3>
+
+                    <div class="price">
+                        ₱2,700
+                        <small>/ 3 months</small>
+                    </div>
+
+                    <p>Save ₱300</p>
+
+                    <button>Manage Plan</button>
+
+                </div>
+
+
+                <div class="plan-card">
+
+                    <i class="fa-solid fa-calendar-check"></i>
+
+                    <h3>Annual</h3>
+
+                    <div class="price">
+                        ₱9,000
+                        <small>/ year</small>
+                    </div>
+
+                    <p>Best value membership</p>
+
+                    <button>Manage Plan</button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SALES PAGE ================= -->
+
+        <section class="page" id="salesPage">
+
+            <div class="page-actions">
+
+                <div>
+                    <h2>Sales</h2>
+                    <p>Track gym payments and transactions</p>
+                </div>
+
+                <button class="primary-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    New Sale
+                </button>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fa-solid fa-peso-sign"></i>
+                    </div>
+
+                    <div>
+                        <span>Today's Sales</span>
+                        <h2>₱8,500</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+
+                    <div>
+                        <span>This Month</span>
+                        <h2>₱85,000</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+
+                    <div>
+                        <span>Transactions</span>
+                        <h2>142</h2>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="card table-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>Recent Transactions</h3>
+                    </div>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Member</th>
+                                <th>Plan</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>#TRX-1001</td>
+                                <td>Juan Dela Cruz</td>
+                                <td>Monthly</td>
+                                <td>₱1,000</td>
+                                <td>Sep 07, 2026</td>
+                                <td>
+                                    <span class="badge active-badge">
+                                        Paid
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>#TRX-1002</td>
+                                <td>Mark Santos</td>
+                                <td>3 Months</td>
+                                <td>₱2,700</td>
+                                <td>Sep 07, 2026</td>
+                                <td>
+                                    <span class="badge active-badge">
+                                        Paid
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= REPORTS ================= -->
+
+        <section class="page" id="reportsPage">
+
+            <div class="page-actions">
+
+                <div>
+                    <h2>Reports & Analytics</h2>
+                    <p>Monitor your gym performance</p>
+                </div>
+
+                <button class="primary-btn">
+                    <i class="fa-solid fa-download"></i>
+                    Export Report
+                </button>
+
+            </div>
+
+
+            <div class="report-grid">
+
+                <div class="report-card">
+                    <i class="fa-solid fa-users"></i>
+                    <h3>248</h3>
+                    <p>Total Registered Members</p>
+                </div>
+
+                <div class="report-card">
+                    <i class="fa-solid fa-user-check"></i>
+                    <h3>186</h3>
+                    <p>Active Memberships</p>
+                </div>
+
+                <div class="report-card">
+                    <i class="fa-solid fa-user-xmark"></i>
+                    <h3>12</h3>
+                    <p>Expired Memberships</p>
+                </div>
+
+                <div class="report-card">
+                    <i class="fa-solid fa-peso-sign"></i>
+                    <h3>₱85K</h3>
+                    <p>Monthly Revenue</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SETTINGS ================= -->
+
+        <section class="page" id="settingsPage">
+
+            <div class="page-actions">
+
+                <div>
+                    <h2>Settings</h2>
+                    <p>Manage system settings</p>
+                </div>
+
+            </div>
+
+
+            <div class="settings-card">
+
+                <h3>Gym Information</h3>
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Gym Name</label>
+                        <input type="text"
+                               value="PowerFit Gym">
+                    </div>
+
+                    <div>
+                        <label>Email</label>
+                        <input type="email"
+                               value="admin@powerfit.com">
+                    </div>
+
+                    <div>
+                        <label>Phone</label>
+                        <input type="text"
+                               value="09123456789">
+                    </div>
+
+                    <div>
+                        <label>Address</label>
+                        <input type="text"
+                               value="Quezon City, Philippines">
+                    </div>
+
+                </div>
+
+                <button class="primary-btn save-btn">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================= ADD MEMBER MODAL ================= -->
+
+<div class="modal" id="memberModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Add New Member</h2>
+                <p>Enter member information</p>
+            </div>
+
+            <button id="closeModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <form id="memberForm">
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Full Name</label>
+                    <input type="text"
+                           id="newName"
+                           placeholder="Juan Dela Cruz"
+                           required>
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <input type="email"
+                           id="newEmail"
+                           placeholder="juan@email.com"
+                           required>
+                </div>
+
+                <div>
+                    <label>Phone</label>
+                    <input type="text"
+                           id="newPhone"
+                           placeholder="09123456789"
+                           required>
+                </div>
+
+                <div>
+                    <label>Membership Plan</label>
+
+                    <select id="newPlan">
+
+                        <option>Monthly</option>
+                        <option>3 Months</option>
+                        <option>6 Months</option>
+                        <option>Annual</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-buttons">
+
+                <button type="button"
+                        class="cancel-btn"
+                        id="cancelModal">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="primary-btn">
+                    Add Member
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
