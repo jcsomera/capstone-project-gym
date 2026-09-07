@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Management System Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15171B;
+    --ink-2:#1C1F24;
+    --panel:#20242A;
+    --bone:#EDEAE2;
+    --bone-dim:#C9C6BD;
+    --ember:#FF4A23;
+    --ember-dim:#7A2A18;
+    --steel:#6E93B6;
+    --steel-dim:#31414F;
+    --line:rgba(237,234,226,0.12);
+    --line-strong:rgba(237,234,226,0.22);
+    --mute:#93969B;
+    --radius:14px;
+    --font-head:'Bebas Neue', 'Arial Narrow', sans-serif;
+    --font-body:'IBM Plex Sans', 'Segoe UI', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--bone);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:var(--font-head); font-weight:400; letter-spacing:0.02em; margin:0;}
+  p{margin:0;}
+  img{display:block; max-width:100%;}
+  button{font-family:inherit; cursor:pointer;}
+  a{color:inherit;}
+  ::selection{background:var(--ember); color:var(--ink);}
+
+  :focus-visible{
+    outline:2px solid var(--ember);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(21,23,27,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px;
+  }
+  .nav-mark{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-head);
+    font-size:22px;
+    letter-spacing:0.04em;
+  }
+  .nav-mark .dot{
+    width:10px; height:10px; border-radius:2px;
+    background:var(--ember);
+    transform:rotate(45deg);
+  }
+  .nav-links{
+    display:flex; gap:28px; list-style:none; margin:0; padding:0;
+    font-size:14px; font-weight:500;
+  }
+  .nav-links a{
+    text-decoration:none; color:var(--mute);
+    padding:6px 2px; border-bottom:2px solid transparent;
+    transition:color .18s ease, border-color .18s ease;
+  }
+  .nav-links a.active,
+  .nav-links a:hover{ color:var(--bone); border-color:var(--ember); }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding:96px 0 80px;
+    background:
+      repeating-linear-gradient(45deg, rgba(237,234,226,0.035) 0 2px, transparent 2px 34px),
+      repeating-linear-gradient(-45deg, rgba(237,234,226,0.035) 0 2px, transparent 2px 34px),
+      var(--ink);
+  }
+  .hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(60% 50% at 78% 20%, rgba(255,74,35,0.14), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-inner{
+    position:relative; z-index:1;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:56px;
+    align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; color:var(--steel); font-weight:600;
+    margin-bottom:18px;
+  }
+  .hero-eyebrow::before{content:"●"; color:var(--ember); font-size:10px;}
+  .hero h1{
+    font-size:clamp(48px, 6.4vw, 86px);
+    line-height:0.96;
+    color:var(--bone);
+    opacity:0; transform:translateY(14px);
+  }
+  .hero h1 em{ font-style:normal; color:var(--ember); }
+  .hero p.lede{
+    max-width:44ch;
+    margin-top:22px;
+    font-size:17px;
+    color:var(--bone-dim);
+    opacity:0; transform:translateY(14px);
+  }
+  .hero-cta{
+    margin-top:34px;
+    display:flex; gap:14px; flex-wrap:wrap;
+    opacity:0; transform:translateY(14px);
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px;
+    border-radius:999px;
+    font-size:14px; font-weight:600;
+    border:1px solid transparent;
+    text-decoration:none;
+  }
+  .btn-primary{ background:var(--ember); color:var(--ink); }
+  .btn-primary:hover{ background:#ff5f3e; }
+  .btn-ghost{ background:transparent; color:var(--bone); border-color:var(--line-strong); }
+  .btn-ghost:hover{ border-color:var(--bone); }
+
+  .hero.is-ready h1,
+  .hero.is-ready p.lede,
+  .hero.is-ready .hero-cta{
+    animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .hero.is-ready p.lede{ animation-delay:.1s; }
+  .hero.is-ready .hero-cta{ animation-delay:.2s; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0);} }
+
+  /* hero id-card visual */
+  .id-card{
+    position:relative;
+    background:linear-gradient(160deg, var(--panel), #171A1F 70%);
+    border:1px solid var(--line-strong);
+    border-radius:20px;
+    padding:26px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+    transform:rotate(2deg);
+  }
+  .id-card::before{
+    content:"MEMBER";
+    position:absolute; top:22px; right:26px;
+    font-family:var(--font-head);
+    font-size:12px; letter-spacing:0.16em;
+    color:var(--mute);
+  }
+  .id-card-row{ display:flex; gap:18px; align-items:center; margin-bottom:22px;}
+  .id-avatar{
+    width:58px; height:58px; border-radius:50%;
+    background:linear-gradient(135deg, var(--steel), var(--steel-dim));
+    flex-shrink:0;
+  }
+  .id-name{ font-family:var(--font-head); font-size:26px; letter-spacing:0.02em;}
+  .id-sub{ font-size:12px; color:var(--mute); margin-top:2px;}
+  .id-strip{
+    height:1px; background:var(--line); margin:18px 0;
+  }
+  .id-meta{ display:flex; justify-content:space-between; font-size:12px; color:var(--mute); margin-bottom:14px;}
+  .id-meta b{ display:block; color:var(--bone); font-size:15px; font-weight:600; margin-top:2px;}
+  .id-qr{
+    width:74px; height:74px; margin-left:auto;
+    background:var(--bone);
+    border-radius:8px;
+    padding:6px;
+  }
+  .id-qr-grid{
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    grid-template-rows:repeat(9,1fr);
+    width:100%; height:100%;
+    gap:1px;
+  }
+  .id-qr-grid i{ background:var(--ink); border-radius:1px; }
+  .id-qr-grid i.off{ background:transparent; }
+
+  /* ---------- Sections ---------- */
+  .section{ padding:104px 0; border-top:1px solid var(--line); }
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:24px; margin-bottom:52px; flex-wrap:wrap;
+  }
+  .section-head h2{ font-size:clamp(34px,4vw,52px); color:var(--bone); }
+  .section-tag{
+    font-size:13px; font-weight:600; color:var(--ember);
+    letter-spacing:0.06em; margin-bottom:10px; display:block;
+  }
+  .section-head p{ max-width:38ch; color:var(--mute); font-size:15px; }
+
+  .grid-2x2{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:28px;
+  }
+  .grid-4{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:22px;
+  }
+
+  .screen-label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:12px;
+  }
+  .screen-label h3{ font-size:20px; color:var(--bone); font-weight:400; }
+  .screen-label span{ font-size:12px; color:var(--mute); }
+
+  /* ---------- Browser frame (web console) ---------- */
+  .browser{
+    background:var(--panel);
+    border:1px solid var(--line-strong);
+    border-radius:12px;
+    overflow:hidden;
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    background:#191C21;
+    border-bottom:1px solid var(--line);
+  }
+  .browser-bar .dot{ width:8px; height:8px; border-radius:50%; background:var(--line-strong); }
+  .browser-url{
+    flex:1; margin-left:8px;
+    background:#12141810;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:4px 10px;
+    font-size:11px; color:var(--mute);
+    font-family:monospace;
+  }
+  .frame-canvas{
+    position:relative;
+    aspect-ratio:16/10;
+    background:#181B20;
+    overflow:hidden;
+  }
+
+  /* ---------- Phone frame (mobile app) ---------- */
+  .phone{
+    background:#0F1115;
+    border:1px solid var(--line-strong);
+    border-radius:34px;
+    padding:10px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02);
+  }
+  .phone-notch{
+    height:20px; display:flex; justify-content:center; align-items:flex-start;
+  }
+  .phone-notch::before{
+    content:""; width:70px; height:8px; background:#000; border-radius:8px; margin-top:4px;
+  }
+  .phone .frame-canvas{
+    aspect-ratio:9/17.5;
+    border-radius:22px;
+  }
+  .phone-home{
+    height:16px; display:flex; align-items:center; justify-content:center;
+  }
+  .phone-home::before{
+    content:""; width:80px; height:4px; background:var(--line-strong); border-radius:4px;
+  }
+
+  /* ---------- Upload overlay ---------- */
+  .uploader{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px;
+    background:rgba(15,17,21,0.0);
+    border:1px dashed transparent;
+    color:var(--mute);
+    font-size:12px;
+    transition:background .18s ease, border-color .18s ease;
+    z-index:5;
+  }
+  .frame-canvas:hover .uploader,
+  .frame-canvas:focus-within .uploader{
+    background:rgba(15,17,21,0.72);
+    border-color:var(--line-strong);
+  }
+  .frame-canvas.has-image .uploader{ opacity:0; }
+  .frame-canvas.has-image:hover .uploader{ opacity:1; background:rgba(15,17,21,0.55); }
+  .uploader-plus{
+    width:34px; height:34px; border-radius:50%;
+    border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; color:var(--bone);
+  }
+  .uploader button{
+    background:none; border:none; color:inherit; font:inherit;
+    padding:6px 10px;
+  }
+  .uploaded-img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:top center;
+    display:none;
+  }
+  .frame-canvas.has-image .uploaded-img{ display:block; }
+
+  /* ---------- Mock UI content (wireframe filler) ---------- */
+  .mock{ position:absolute; inset:0; padding:16px; }
+  .mock-row{ display:flex; gap:10px; }
+  .bar{ background:var(--line-strong); border-radius:5px; }
+  .card-lite{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:8px; padding:10px;
+  }
+
+  /* login (web) */
+  .mock-login{ display:flex; align-items:center; justify-content:center; height:100%; }
+  .login-card{ width:62%; padding:20px; }
+  .login-logo{ width:26px; height:26px; border-radius:6px; background:var(--ember); margin:0 auto 14px; }
+  .login-field{ height:9px; margin-bottom:10px; }
+  .login-btn{ height:12px; margin-top:14px; background:var(--ember); border-radius:6px; opacity:0.9;}
+
+  /* dashboard (web) */
+  .dash-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px; }
+  .dash-stats .card-lite{ height:44px; }
+  .dash-stats .card-lite .bar{ width:60%; height:6px; margin-bottom:6px; }
+  .dash-stats .card-lite .bar.big{ width:40%; height:10px; background:var(--steel); }
+  .dash-chart{ height:38%; display:flex; align-items:flex-end; gap:6px; padding:10px; }
+  .dash-chart .bar{ flex:1; background:linear-gradient(180deg, var(--steel), var(--steel-dim)); border-radius:3px 3px 0 0; }
+  .dash-list .mock-row{ padding:6px 2px; border-bottom:1px solid var(--line); align-items:center; }
+  .dash-list .bar{ height:6px; }
+
+  /* payments (web) */
+  .pay-row{ display:flex; justify-content:space-between; align-items:center; padding:9px 4px; border-bottom:1px solid var(--line); }
+  .pay-name{ display:flex; gap:8px; align-items:center; }
+  .pay-avatar{ width:20px; height:20px; border-radius:50%; background:var(--line-strong); }
+  .pill{ padding:3px 9px; border-radius:999px; font-size:9px; }
+  .pill.paid{ background:rgba(110,147,182,0.2); color:var(--steel); }
+  .pill.due{ background:rgba(255,74,35,0.18); color:var(--ember); }
+
+  /* membership (web) */
+  .plan-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; height:100%; }
+  .plan-col{ display:flex; flex-direction:column; gap:8px; }
+  .plan-col.feat{ border:1px solid var(--ember); }
+  .plan-col .bar.tick{ width:70%; height:5px; }
+
+  /* mobile login */
+  .m-login{ height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 20px; gap:10px; }
+  .m-logo{ width:30px; height:30px; border-radius:8px; background:var(--ember); margin-bottom:8px; }
+  .m-field{ width:100%; height:26px; border-radius:8px; }
+  .m-btn{ width:100%; height:30px; border-radius:999px; background:var(--ember); margin-top:6px; }
+
+  /* mobile plans */
+  .m-plan{ display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; margin-bottom:10px; border:1px solid var(--line); }
+  .m-plan.sel{ border-color:var(--ember); background:rgba(255,74,35,0.08); }
+  .m-radio{ width:16px; height:16px; border-radius:50%; border:2px solid var(--line-strong); flex-shrink:0; }
+  .m-plan.sel .m-radio{ border-color:var(--ember); background:radial-gradient(circle, var(--ember) 40%, transparent 42%); }
+
+  /* mobile QR */
+  .m-qr-wrap{ height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+  .m-qr{ width:56%; aspect-ratio:1; background:var(--bone); border-radius:14px; padding:10px; }
+  .streak{ font-size:11px; color:var(--ember); background:rgba(255,74,35,0.14); padding:5px 12px; border-radius:999px; }
+
+  /* mobile achievements */
+  .badge-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding-top:8px; }
+  .badge{ aspect-ratio:1; border-radius:14px; background:var(--ink-2); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .badge.locked{ opacity:0.3; filter:grayscale(1); }
+  .prog-track{ height:6px; background:var(--line); border-radius:99px; margin-top:12px; }
+  .prog-fill{ height:100%; width:64%; background:var(--ember); border-radius:99px; }
+
+  /* ---------- Team ---------- */
+  .team-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+  }
+  .team-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 24px;
+    text-align:center;
+  }
+  .team-photo{
+    width:104px; height:104px; border-radius:50%;
+    margin:0 auto 20px;
+    position:relative;
+    background:linear-gradient(135deg, var(--steel-dim), var(--ink-2));
+    border:1px solid var(--line-strong);
+    overflow:hidden;
+    cursor:pointer;
+  }
+  .team-photo img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .team-photo.has-image img{ display:block; }
+  .team-photo .uploader{ border-radius:50%; font-size:10px; }
+  .team-photo .uploader-plus{ width:26px; height:26px; font-size:14px; }
+  .team-role{
+    font-size:11px; letter-spacing:0.08em; color:var(--ember);
+    font-weight:600; margin-bottom:6px;
+  }
+  .team-name{
+    font-family:var(--font-head); font-size:26px; margin-bottom:10px;
+    outline-offset:4px;
+  }
+  .team-desc{
+    font-size:14px; color:var(--bone-dim);
+    outline-offset:4px;
+  }
+
+  .banner{
+    background:var(--ink-2);
+    border-bottom:1px solid var(--line);
+    font-size:13px; color:var(--mute);
+    text-align:center;
+    padding:10px 20px;
+  }
+  .banner b{ color:var(--bone); }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:40px 0;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:13px; color:var(--mute);
+    flex-wrap:wrap; gap:12px;
+  }
+
+  @media (max-width: 920px){
+    .hero-inner{ grid-template-columns:1fr; }
+    .id-card{ transform:none; max-width:340px; }
+    .grid-4{ grid-template-columns:repeat(2,1fr); }
+    .grid-2x2{ grid-template-columns:1fr; }
+    .team-grid{ grid-template-columns:1fr; max-width:400px; margin:0 auto; }
+    .nav-links{ display:none; }
+    .plan-cols{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 560px){
+    .wrap{ padding:0 20px; }
+    .grid-4{ grid-template-columns:1fr; }
+    .dash-stats{ grid-template-columns:repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-mark"><span class="dot"></span> PORTFOLIO</div>
+    <ul class="nav-links">
+      <li><a href="#console" data-nav>Console</a></li>
+      <li><a href="#app" data-nav>App</a></li>
+      <li><a href="#team" data-nav>Team</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-inner">
+    <div>
+      <span class="hero-eyebrow">Gym management platform</span>
+      <h1>ONE SYSTEM<br>RUNS THE <em>FLOOR</em><br>AND THE <em>PHONE</em>.</h1>
+      <p class="lede">Our capstone project pairs a staff-facing web console or admin system for running the gym with a member-facing mobile app for showing up to it — memberships, payments, check-ins, and progress in one connected system.</p>
+      <div class="hero-cta">
+        <a href="#console" class="btn btn-primary">View the console</a>
+        <a href="#app" class="btn btn-ghost">View the app</a>
+      </div>
+    </div>
+    <div class="id-card">
+      <div class="id-card-row">
+        <div class="id-avatar"></div>
+        <div>
+          <div class="id-name">J. DELA CRUZ</div>
+          <div class="id-sub">Member since Mar 20XX</div>
+        </div>
+      </div>
+      <div class="id-strip"></div>
+      <div class="id-meta">
+        <div>Plan<b>Elite</b></div>
+        <div>Status<b style="color:var(--steel)">Active</b></div>
+        <div>Visits<b>142</b></div>
+      </div>
+      <div class="id-qr">
+        <div class="id-qr-grid" id="heroQr"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="console">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Admin web system</span>
+        <h2>The Console</h2>
+      </div>
+      <p>What staff see when they run the front desk: sign-in, the daily dashboard, billing, and membership plans.</p>
+    </div>
+
+    <div class="grid-4">
+      <div>
+        <div class="screen-label"><h3>Login</h3><span>Staff access</span></div>
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="browser-url">console.gym.app/login</div></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock mock-login">
+              <div class="login-card card-lite">
+                <div class="login-logo"></div>
+                <div class="bar login-field" style="width:100%"></div>
+                <div class="bar login-field" style="width:100%"></div>
+                <div class="bar login-btn" style="width:100%"></div>
+              </div>
+            </div>
+            <img class="uploaded-img" alt="Console login screen screenshot">
+            
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-label"><h3>Dashboard</h3><span>Daily overview</span></div>
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="browser-url">console.gym.app/dashboard</div></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock">
+              <div class="dash-stats">
+                <div class="card-lite"><div class="bar"></div><div class="bar big"></div></div>
+                <div class="card-lite"><div class="bar"></div><div class="bar big"></div></div>
+                <div class="card-lite"><div class="bar"></div><div class="bar big"></div></div>
+                <div class="card-lite"><div class="bar"></div><div class="bar big"></div></div>
+              </div>
+              <div class="dash-chart" id="dashChart"></div>
+              <div class="dash-list">
+                <div class="mock-row"><div class="bar" style="width:18%"></div><div class="bar" style="width:40%"></div><div class="bar" style="width:10%; margin-left:auto;"></div></div>
+                <div class="mock-row"><div class="bar" style="width:18%"></div><div class="bar" style="width:32%"></div><div class="bar" style="width:10%; margin-left:auto;"></div></div>
+                <div class="mock-row"><div class="bar" style="width:18%"></div><div class="bar" style="width:46%"></div><div class="bar" style="width:10%; margin-left:auto;"></div></div>
+              </div>
+            </div>
+            <img class="uploaded-img" alt="Console dashboard screenshot">
+            
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-label"><h3>Payments</h3><span>Billing &amp; invoices</span></div>
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="browser-url">console.gym.app/payments</div></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock">
+              <div class="pay-row"><div class="pay-name"><span class="pay-avatar"></span><div class="bar" style="width:70px;height:6px;"></div></div><span class="pill paid">Paid</span></div>
+              <div class="pay-row"><div class="pay-name"><span class="pay-avatar"></span><div class="bar" style="width:56px;height:6px;"></div></div><span class="pill due">Due</span></div>
+              <div class="pay-row"><div class="pay-name"><span class="pay-avatar"></span><div class="bar" style="width:64px;height:6px;"></div></div><span class="pill paid">Paid</span></div>
+              <div class="pay-row"><div class="pay-name"><span class="pay-avatar"></span><div class="bar" style="width:48px;height:6px;"></div></div><span class="pill paid">Paid</span></div>
+              <div class="card-lite" style="margin-top:10px; display:flex; justify-content:space-between;">
+                <div class="bar" style="width:40%;height:8px;"></div>
+                <div class="bar" style="width:20%;height:8px;background:var(--steel);"></div>
+              </div>
+            </div>
+            <img class="uploaded-img" alt="Console payments screenshot">
+            
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-label"><h3>Membership</h3><span>Plan management</span></div>
+        <div class="browser">
+          <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="browser-url">console.gym.app/plans</div></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock">
+              <div class="plan-cols">
+                <div class="plan-col card-lite"><div class="bar" style="width:50%"></div><div class="bar tick"></div><div class="bar tick"></div></div>
+                <div class="plan-col card-lite feat"><div class="bar" style="width:50%;background:var(--ember);"></div><div class="bar tick"></div><div class="bar tick"></div><div class="bar tick"></div></div>
+                <div class="plan-col card-lite"><div class="bar" style="width:50%"></div><div class="bar tick"></div><div class="bar tick"></div></div>
+              </div>
+            </div>
+            <img class="uploaded-img" alt="Console membership plans screenshot">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="app">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Member mobile app</span>
+        <h2>The App</h2>
+      </div>
+      <p>What members carry in their pocket: signing in, choosing a plan, checking in with a QR code, and tracking progress.</p>
+    </div>
+
+    <div class="grid-4">
+      <div>
+        <div class="screen-label"><h3>Login</h3><span>Member access</span></div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock m-login">
+              <div class="m-logo"></div>
+              <div class="card-lite m-field" style="width:100%"></div>
+              <div class="card-lite m-field" style="width:100%"></div>
+              <div class="m-btn"></div>
+              <div class="bar" style="width:50%;height:6px;margin-top:10px;"></div>
+            </div>
+            <img class="uploaded-img" alt="Member app login screen screenshot">
+            
+          </div>
+          <div class="phone-home"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-label"><h3>Plan choices</h3><span>Pick membership</span></div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock">
+              <div class="bar" style="width:60%;height:9px;margin-bottom:14px;"></div>
+              <div class="m-plan"><span class="m-radio"></span><div><div class="bar" style="width:70px;height:6px;margin-bottom:6px;"></div><div class="bar" style="width:40px;height:6px;"></div></div></div>
+              <div class="m-plan sel"><span class="m-radio"></span><div><div class="bar" style="width:70px;height:6px;margin-bottom:6px;"></div><div class="bar" style="width:40px;height:6px;"></div></div></div>
+              <div class="m-plan"><span class="m-radio"></span><div><div class="bar" style="width:70px;height:6px;margin-bottom:6px;"></div><div class="bar" style="width:40px;height:6px;"></div></div></div>
+            </div>
+            <img class="uploaded-img" alt="Member app plan selection screenshot">
+            
+          </div>
+          <div class="phone-home"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-label"><h3>QR attendance</h3><span>Check in</span></div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock m-qr-wrap">
+              <div class="m-qr"><div class="id-qr-grid" id="appQr"></div></div>
+              <div class="bar" style="width:44%;height:7px;"></div>
+              <div class="streak">🔥 12-day streak</div>
+            </div>
+            <img class="uploaded-img" alt="Member app QR check-in screenshot">
+            
+          </div>
+          <div class="phone-home"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-label"><h3>Achievements</h3><span>Progress &amp; badges</span></div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="frame-canvas" data-upload>
+            <div class="mock">
+              <div class="bar" style="width:50%;height:9px;"></div>
+              <div class="prog-track"><div class="prog-fill"></div></div>
+              <div class="badge-grid">
+                <div class="badge">🏆</div>
+                <div class="badge">⚡</div>
+                <div class="badge">💪</div>
+                <div class="badge">🎯</div>
+                <div class="badge locked">🔒</div>
+                <div class="badge locked">🔒</div>
+              </div>
+            </div>
+            <img src="img/mobile-achievement.png" alt="Member app achievements screenshot">
+            
+          </div>
+          <div class="phone-home"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="team">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">The people behind it</span>
+        <h2>Built By</h2>
+      </div>
+      <p>Three creators, one system — from the front desk to the front pocket.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-photo">
+          <img src="img/vincent.jpg" alt="Photo of team member one">
+        </div>
+        <div class="team-role">Student Developer</div>
+        <h3 class="team-name" spellcheck="false">Vincent Suba</h3>
+        <p class="team-desc" spellcheck="false">Built the admin console end-to-end, from the login flow to the payments engine, and designed the database that keeps memberships and billing in sync.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="team-photo" data-upload>
+          <img alt="Photo of team member two">
+          
+        </div>
+        <div class="team-role">Mobile App Developer</div>
+        <h3 class="team-name" spellcheck="false">Sam Okafor</h3>
+        <p class="team-desc" spellcheck="false">Designed and built the member app, including the QR check-in system and the achievement tracker that keeps members coming back.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="team-photo" data-upload>
+          <img alt="Photo of team member three">
+          
+        </div>
+        <div class="team-role">UI/UX &amp; Project Lead</div>
+        <h3 class="team-name"  ="true" spellcheck="false">Priya Nandan</h3>
+        <p class="team-desc"  ="true" spellcheck="false">Shaped the look and feel of both apps, ran user testing with real gym staff and members, and coordinated the project from first sketch to launch.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="wrap">
+  <div>A gym management system portfolio.</div>
+  <div>Built with HTML, CSS &amp; JavaScript.</div>
+</footer>
+
+<input type="file" id="fileInput" accept="image/*" style="display:none">
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- deterministic QR-ish pattern generator ---- */
+  function seededRandom(seed){
+    let s = seed;
+    return function(){
+      s = (s * 9301 + 49297) % 233280;
+      return s / 233280;
+    };
+  }
+  function buildQr(el, seed){
+    const size = 9;
+    const rand = seededRandom(seed);
+    const isFinder = (r,c) => (r<3 && c<3) || (r<3 && c>size-4) || (r>size-4 && c<3);
+    let html = "";
+    for(let r=0;r<size;r++){
+      for(let c=0;c<size;c++){
+        let on;
+        if(isFinder(r,c)){
+          const br = r%3===0 || r%3===1 && (c%3===0);
+          on = (r%3!==1) || (c%3!==1);
+          if(!isFinder(r,c)) on = false;
+          on = !( (r%3===1) && (c%3===1) );
+        } else {
+          on = rand() > 0.55;
+        }
+        html += `<i class="${on ? '' : 'off'}"></i>`;
+      }
+    }
+    el.innerHTML = html;
+  }
+  document.querySelectorAll("#heroQr, #appQr").forEach((el, i) => buildQr(el, 42 + i * 17));
+
+  /* ---- fake dashboard bar chart ---- */
+  const chart = document.getElementById("dashChart");
+  if(chart){
+    const heights = [40,65,50,80,60,90,70];
+    chart.innerHTML = heights.map(h => `<div class="bar" style="height:${h}%"></div>`).join("");
+  }
+
+  /* ---- hero entrance (single orchestrated reveal) ---- */
+  requestAnimationFrame(() => {
+    document.querySelector(".hero").classList.add("is-ready");
+  });
+
+  /* ---- scrollspy nav ---- */
+  const navLinks = document.querySelectorAll("[data-nav]");
+  const sections = ["console","app","team"].map(id => document.getElementById(id));
+  if("IntersectionObserver" in window){
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const link = document.querySelector(`[data-nav][href="#${entry.target.id}"]`);
+        if(!link) return;
+        if(entry.isIntersecting){
+          navLinks.forEach(l => l.classList.remove("active"));
+          link.classList.add("active");
+        }
+      });
+    }, { rootMargin: "-40% 0px -50% 0px" });
+    sections.forEach(s => s && spy.observe(s));
+  }
+
+  /* ---- image upload for screen mockups & team photos ---- */
+  const fileInput = document.getElementById("fileInput");
+  let activeTarget = null;
+
+  document.querySelectorAll("[data-upload]").forEach(tile => {
+    tile.setAttribute("tabindex", "0");
+    tile.setAttribute("role", "button");
+    tile.setAttribute("aria-label", "Click to upload an image for this tile");
+    tile.addEventListener("click", () => openPicker(tile));
+    tile.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        openPicker(tile);
+      }
+    });
+  });
+
+  function openPicker(tile){
+    activeTarget = tile;
+    fileInput.value = "";
+    fileInput.click();
+  }
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files && fileInput.files[0];
+    if(!file || !activeTarget) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = activeTarget.querySelector("img");
+      if(img){
+        img.src = e.target.result;
+        activeTarget.classList.add("has-image");
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* ---- contenteditable: select-all on focus for quick replace ---- */
+  document.querySelectorAll("[contenteditable='true']").forEach(el => {
+    el.addEventListener("focus", () => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+  });
+})();
+</script>
+</body>
+</html>
