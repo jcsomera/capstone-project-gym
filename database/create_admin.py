@@ -1,5 +1,4 @@
-import mysql.connector
-from werkzeug.security import generate_password_hash
+import importlib
 import os
 
 # =========================
@@ -27,9 +26,27 @@ PASSWORD = "admin123"
 
 def create_admin():
 
+    try:
+        generate_password_hash = importlib.import_module(
+            "werkzeug.security"
+        ).generate_password_hash
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "Werkzeug is not installed. Run: "
+            "python -m pip install werkzeug"
+        ) from exc
+
     hashed_password = generate_password_hash(PASSWORD)
 
-    conn = mysql.connector.connect(**DB_CONFIG)
+    try:
+        mysql_connector = importlib.import_module("mysql.connector")
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "The MySQL connector is not installed. Run: "
+            "python -m pip install mysql-connector-python"
+        ) from exc
+
+    conn = mysql_connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
 
     try:

@@ -74,26 +74,34 @@ $("loginForm").addEventListener(
 
             if (data.success) {
 
-                $("loginPage")
-                    .classList
-                    .add("hidden");
+    $("loginPage")
+        .classList
+        .add("hidden");
 
-                $("app")
-                    .classList
-                    .remove("hidden");
+    $("app")
+        .classList
+        .remove("hidden");
 
-                $("adminName")
-                    .textContent =
-                    data.admin.username;
+    $("adminName")
+        .textContent =
+        data.admin.username;
 
-                loadDashboard();
 
-                loadMembers();
+    // Dashboard
+    loadDashboard();
 
-                loadSales();
+    // Members
+    loadMembers();
 
-                return;
-            }
+    // Sales
+    loadSales();
+
+    // Automatic Attendance
+    loadAllAttendance();
+
+
+    return;
+}
 
 
             if (data.locked) {
@@ -307,17 +315,262 @@ function showPage(page) {
         page.slice(1);
 
 
-    if (page === "members") {
+  if (page === "members") {
+    loadMembers();
+}
 
-        loadMembers();
+if (page === "sales") {
+    loadSales();
+}
+
+if (page === "dashboard") {
+    loadDashboard();
+    loadAllAttendance();
+}
+
+if (page === "reports") {
+    loadReports();
+}
+
+}
+
+
+
+
+// =========================
+// REPORTS
+// =========================
+
+async function loadReports() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/reports"
+            );
+
+        if (!response.ok) {
+            throw new Error("Failed to load reports");
+        }
+
+        const data =
+            await response.json();
+
+
+        // =========================
+        // SUMMARY
+        // =========================
+
+        $("reportTotalMembers").textContent =
+            data.summary.total_members;
+
+        $("reportActiveMembers").textContent =
+            data.summary.active_members;
+
+        $("reportExpiredMembers").textContent =
+            data.summary.expired_members;
+
+        $("reportTotalSales").textContent =
+            money(data.summary.total_sales);
+
+
+        // =========================
+        // SALES BY PLAN
+        // =========================
+
+        const planTable =
+            $("salesByPlan");
+
+        if (
+            !data.sales_by_plan ||
+            data.sales_by_plan.length === 0
+        ) {
+
+            planTable.innerHTML = `
+                <tr>
+                    <td colspan="3" class="loading-row">
+                        No sales records found.
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            planTable.innerHTML =
+                data.sales_by_plan.map(item => `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                item.plan_name
+                            )}
+                        </td>
+
+                        <td>
+                            ${item.transactions}
+                        </td>
+
+                        <td>
+                            ${money(item.total)}
+                        </td>
+
+                    </tr>
+
+                `).join("");
+        }
+
+
+        // =========================
+        // PAYMENT METHODS
+        // =========================
+
+        const paymentTable =
+            $("salesByPayment");
+
+        if (
+            !data.sales_by_payment ||
+            data.sales_by_payment.length === 0
+        ) {
+
+            paymentTable.innerHTML = `
+                <tr>
+                    <td colspan="3" class="loading-row">
+                        No payment records found.
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            paymentTable.innerHTML =
+                data.sales_by_payment.map(item => `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                item.payment_method
+                            )}
+                        </td>
+
+                        <td>
+                            ${item.transactions}
+                        </td>
+
+                        <td>
+                            ${money(item.total)}
+                        </td>
+
+                    </tr>
+
+                `).join("");
+        }
+
+
+        // =========================
+        // RECENT TRANSACTIONS
+        // =========================
+
+        const recentTable =
+            $("reportRecentSales");
+
+        if (
+            !data.recent_sales ||
+            data.recent_sales.length === 0
+        ) {
+
+            recentTable.innerHTML = `
+                <tr>
+                    <td colspan="5" class="loading-row">
+                        No transactions found.
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            recentTable.innerHTML =
+                data.recent_sales.map(sale => `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                sale.full_name ||
+                                "Walk-in"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                sale.plan_name
+                            )}
+                        </td>
+
+                        <td>
+                            ${money(
+                                sale.amount
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                sale.payment_method
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                sale.sale_date
+                            )}
+                        </td>
+
+                    </tr>
+
+                `).join("");
+        }
+
+
+        console.log("Reports loaded successfully.");
+
     }
 
+    catch (error) {
 
-    if (page === "sales") {
+        console.error(
+            "LOAD REPORTS ERROR:",
+            error
+        );
 
-        loadSales();
+        document.getElementById("salesByPlan").innerHTML = `
+            <tr>
+                <td colspan="3" class="loading-row">
+                    Server error.
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("salesByPayment").innerHTML = `
+            <tr>
+                <td colspan="3" class="loading-row">
+                    Server error.
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("reportRecentSales").innerHTML = `
+            <tr>
+                <td colspan="5" class="loading-row">
+                    Server error.
+                </td>
+            </tr>
+        `;
     }
 }
+
+
 
 
 // =========================
@@ -639,21 +892,36 @@ async function deleteMember(id) {
 
 async function loadSales() {
 
-    const response =
-        await fetch(
-            "/api/sales"
-        );
+    try {
 
-    if (!response.ok) return;
+        const response =
+            await fetch("/api/sales");
 
-    const data =
-        await response.json();
+        if (!response.ok) {
+            return;
+        }
 
+        const data =
+            await response.json();
 
-    $("salesTable")
-        .innerHTML =
-        data.sales
-            .map(
+        const table =
+            $("salesTable");
+
+        if (!data.sales || data.sales.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5" class="loading-row">
+                        No sales records found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        table.innerHTML =
+            data.sales.map(
                 sale => `
 
                     <tr>
@@ -684,15 +952,257 @@ async function loadSales() {
                         </td>
 
                         <td>
-                            ${sale.sale_date}
+                            ${escapeHtml(
+                                sale.sale_date
+                            )}
                         </td>
 
                     </tr>
 
                 `
-            )
-            .join("");
+            ).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Sales error:",
+            error
+        );
+
+    }
 }
+
+
+// =========================
+// OPEN SALE MODAL
+// =========================
+
+async function openSaleModal() {
+
+    $("saleModal")
+        .classList
+        .remove("hidden");
+
+    await loadSaleMembers();
+}
+
+
+// =========================
+// CLOSE SALE MODAL
+// =========================
+
+function closeSaleModal() {
+
+    $("saleModal")
+        .classList
+        .add("hidden");
+
+    $("saleForm")
+        .reset();
+
+}
+
+
+// =========================
+// LOAD MEMBERS FOR SALE
+// =========================
+
+async function loadSaleMembers() {
+
+    try {
+
+        const response =
+            await fetch("/api/members");
+
+        const data =
+            await response.json();
+
+        const select =
+            $("saleMember");
+
+        select.innerHTML = `
+            <option value="">
+                Select Member
+            </option>
+        `;
+
+        data.members.forEach(
+            member => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    member.id;
+
+                option.textContent =
+                    member.full_name;
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Member loading error:",
+            error
+        );
+
+    }
+}
+
+
+// =========================
+// AUTO AMOUNT FROM PLAN
+// =========================
+
+$("salePlan")
+    .addEventListener(
+        "change",
+        function() {
+
+            const option =
+                this.options[
+                    this.selectedIndex
+                ];
+
+            const price =
+                option.dataset.price;
+
+            if (price) {
+
+                $("saleAmount")
+                    .value = price;
+
+            }
+
+        }
+    );
+
+
+// =========================
+// SAVE SALE
+// =========================
+
+$("saleForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const button =
+                this.querySelector(
+                    "button[type='submit']"
+                );
+
+            button.disabled = true;
+
+            button.textContent =
+                "Saving...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/sales",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    member_id:
+                                        $("saleMember")
+                                        .value,
+
+                                    plan_name:
+                                        $("salePlan")
+                                        .value,
+
+                                    amount:
+                                        $("saleAmount")
+                                        .value,
+
+                                    payment_method:
+                                        $("salePayment")
+                                        .value
+
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.success) {
+
+                    alert(
+                        "Sale recorded successfully!"
+                    );
+
+                    closeSaleModal();
+
+                    // Refresh Sales
+                    loadSales();
+
+                    // Refresh Dashboard
+                    loadDashboard();
+
+                }
+
+                else {
+
+                    alert(
+                        data.message ||
+                        "Unable to save sale."
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Save sale error:",
+                    error
+                );
+
+                alert(
+                    "Cannot connect to Flask server."
+                );
+
+            }
+
+            finally {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "Save Sale";
+
+            }
+
+        }
+    );
 
 
 // =========================
@@ -828,180 +1338,265 @@ function escapeHtml(value) {
         .replace(
             /[&<>"']/g,
             character => ({
-
                 "&": "&amp;",
                 "<": "&lt;",
                 ">": "&gt;",
                 '"': "&quot;",
                 "'": "&#039;"
-
             })[character]
         );
-
-
-// =========================
-// ADMIN TIME IN
-// =========================
-
-async function adminTimeIn() {
-
-    const response =
-        await fetch(
-            "/api/admin/time-in",
-            {
-                method: "POST"
-            }
-        );
-
-    const data =
-        await response.json();
-
-    alert(data.message);
-
-    if (data.success) {
-
-        loadAttendance();
-
-    }
-
 }
 
 
 // =========================
-// ADMIN TIME OUT
+// ADMIN ATTENDANCE
 // =========================
 
-async function adminTimeOut() {
+// Load today's/latest attendance
+async function loadAdminAttendance() {
 
-    const confirmLogout =
-        confirm(
-            "Are you sure you want to Time Out?"
-        );
+    try {
 
-    if (!confirmLogout) {
-        return;
-    }
-
-    const response =
-        await fetch(
-            "/api/admin/time-out",
-            {
-                method: "POST"
-            }
-        );
-
-    const data =
-        await response.json();
-
-    alert(data.message);
-
-    if (data.success) {
-
-        loadAttendance();
-
-    }
-
-}
-
-
-// =========================
-// LOAD ATTENDANCE
-// =========================
-
-async function loadAttendance() {
-
-    const response =
-        await fetch(
+        const response = await fetch(
             "/api/admin/attendance"
         );
 
-    if (!response.ok) {
-        return;
-    }
+        const data = await response.json();
 
-    const data =
-        await response.json();
+        console.log("LATEST ATTENDANCE:", data);
 
-    if (
-        !data.success ||
-        data.attendance.length === 0
-    ) {
+        const timeIn =
+            document.getElementById("adminTimeIn");
 
-        $("todayTimeIn")
-            .textContent = "--:--";
+        const timeOut =
+            document.getElementById("adminTimeOut");
 
-        $("todayTimeOut")
-            .textContent = "--:--";
+        const status =
+            document.getElementById("attendanceStatus");
 
-        return;
-    }
+        if (!timeIn || !timeOut || !status) {
+            return;
+        }
 
+        if (!data.success) {
 
-    const today =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+            timeIn.textContent = "Error";
+            timeOut.textContent = "—";
+            status.textContent = "Error";
 
+            return;
+        }
 
-    const todayRecord =
-        data.attendance.find(
-            record =>
-                record.attendance_date === today
+        if (!data.attendance) {
+
+            timeIn.textContent = "No record";
+            timeOut.textContent = "—";
+            status.textContent = "No Attendance";
+
+            return;
+        }
+
+        timeIn.textContent =
+            data.attendance.time_in || "—";
+
+        timeOut.textContent =
+            data.attendance.time_out || "—";
+
+        if (data.attendance.time_out) {
+
+            status.textContent = "Completed";
+
+            status.className =
+                "attendance-status completed";
+
+        } else {
+
+            status.textContent =
+                "Currently Logged In";
+
+            status.className =
+                "attendance-status logged-in";
+        }
+
+    } catch (error) {
+
+        console.error(
+            "LOAD ATTENDANCE ERROR:",
+            error
         );
-
-
-    if (!todayRecord) {
-
-        $("todayTimeIn")
-            .textContent = "--:--";
-
-        $("todayTimeOut")
-            .textContent = "--:--";
-
-        return;
     }
-
-
-    if (todayRecord.time_in) {
-
-        $("todayTimeIn")
-            .textContent =
-            formatTime(
-                todayRecord.time_in
-            );
-    }
-
-
-    if (todayRecord.time_out) {
-
-        $("todayTimeOut")
-            .textContent =
-            formatTime(
-                todayRecord.time_out
-            );
-    }
-
 }
 
 
 // =========================
-// FORMAT TIME
+// LOAD ATTENDANCE HISTORY
 // =========================
 
-function formatTime(dateTime) {
+async function loadAttendanceHistory() {
 
-    const date =
-        new Date(
-            dateTime.replace(" ", "T")
+    const tableBody =
+        document.getElementById(
+            "attendanceHistoryBody"
         );
 
-    return date.toLocaleTimeString(
-        "en-PH",
-        {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true
+    if (!tableBody) {
+        console.error(
+            "attendanceHistoryBody NOT FOUND"
+        );
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/attendance/history"
+        );
+
+        console.log(
+            "History HTTP Status:",
+            response.status
+        );
+
+        const data = await response.json();
+
+        console.log(
+            "ATTENDANCE HISTORY:",
+            data
+        );
+
+        if (!data.success) {
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="loading-row">
+                        ${escapeHtml(
+                            data.message ||
+                            "Unable to load attendance history."
+                        )}
+                    </td>
+                </tr>
+            `;
+
+            return;
         }
-    );
-  }
+
+        if (
+            !data.history ||
+            data.history.length === 0
+        ) {
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="loading-row">
+                        No attendance records found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tableBody.innerHTML = "";
+
+        data.history.forEach(record => {
+
+            const row =
+                document.createElement("tr");
+
+            const statusClass =
+                record.status === "Completed"
+                    ? "completed"
+                    : "logged-in";
+
+            row.innerHTML = `
+                <td>
+                    ${escapeHtml(record.date)}
+                </td>
+
+                <td>
+                    <span class="time-in-text">
+                        ${escapeHtml(record.time_in)}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="time-out-text">
+                        ${escapeHtml(record.time_out)}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="attendance-status ${statusClass}">
+                        ${escapeHtml(record.status)}
+                    </span>
+                </td>
+            `;
+
+            tableBody.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "ATTENDANCE HISTORY ERROR:",
+            error
+        );
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="loading-row">
+                    Server error while loading attendance.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+
+
+// =========================
+// AUTOMATIC ATTENDANCE LOAD
+// =========================
+
+async function loadAllAttendance() {
+
+    await loadAdminAttendance();
+
+    await loadAttendanceHistory();
+}
+
+// =========================
+// REPORTS
+// =========================
+
+async function loadReports() {
+
+    console.log("REPORTS FUNCTION IS RUNNING");
+
+    try {
+        const response = await fetch("/api/reports");
+        const data = await response.json();
+
+        $("reportTotalMembers").textContent = data.summary.total_members;
+        $("reportActiveMembers").textContent = data.summary.active_members;
+        $("reportExpiredMembers").textContent = data.summary.expired_members;
+        $("reportTotalSales").textContent = money(data.summary.total_sales);
+
+        $("salesByPlan").innerHTML = (data.sales_by_plan || []).map(item => `
+            <tr><td>${escapeHtml(item.plan_name)}</td><td>${item.transactions}</td><td>${money(item.total)}</td></tr>
+        `).join("");
+
+        $("salesByPayment").innerHTML = (data.sales_by_payment || []).map(item => `
+            <tr><td>${escapeHtml(item.payment_method)}</td><td>${item.transactions}</td><td>${money(item.total)}</td></tr>
+        `).join("");
+
+        $("reportRecentSales").innerHTML = (data.recent_sales || []).map(sale => `
+            <tr><td>${escapeHtml(sale.full_name || "Walk-in")}</td><td>${escapeHtml(sale.plan_name)}</td><td>${money(sale.amount)}</td><td>${escapeHtml(sale.payment_method)}</td><td>${escapeHtml(sale.sale_date)}</td></tr>
+        `).join("");
+    } catch (error) {
+        console.error("Reports error:", error);
+        alert("Cannot load reports.");
+    }
 }
